@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ponto — Fabrício</title>
+<meta name="theme-color" content="#0B3D91">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azul-escuro:#0B3D91;
+    --azul-medio:#1D5FD6;
+    --azul-claro:#DCEAFE;
+    --azul-claro-2:#BBD6FB;
+    --branco:#FFFFFF;
+    --texto-escuro:#0B1E3D;
+    --texto-claro:#F3F8FF;
+    --alerta:#B34700;
+    --alerta-bg:#FFE3CC;
+    --sombra: 0 8px 24px rgba(11,61,145,0.18);
+    --raio: 16px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg, var(--azul-claro) 0%, #EFF6FF 40%, #F8FBFF 100%);
+    color: var(--texto-escuro);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom: 48px;
+  }
+
+  header.topo{
+    background: linear-gradient(135deg, var(--azul-escuro), var(--azul-medio));
+    color: var(--texto-claro);
+    padding: 28px 20px 40px;
+    border-radius: 0 0 28px 28px;
+    box-shadow: var(--sombra);
+    position: relative;
+    overflow: hidden;
+  }
+  header.topo::after{
+    content:"";
+    position:absolute;
+    right:-40px; top:-60px;
+    width:180px; height:180px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:12px;
+    font-weight:600;
+    opacity:.85;
+    margin:0 0 6px;
+  }
+  h1.nome{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:clamp(28px,7vw,40px);
+    margin:0;
+    line-height:1.1;
+  }
+  .mes-atual{
+    font-size:16px;
+    font-weight:500;
+    opacity:.92;
+    margin-top:6px;
+  }
+  .status-sync{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:600;
+    margin-top:10px;
+    padding:4px 10px;
+    border-radius:999px;
+    background: rgba(255,255,255,0.14);
+    width:fit-content;
+  }
+  .status-sync.ok::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:#7CE6A6;
+    display:inline-block;
+  }
+  .status-sync.erro::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:#FF9B6A;
+    display:inline-block;
+  }
+
+  main{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .cartao-hoje{
+    background: var(--branco);
+    border: 2px solid var(--azul-medio);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+    margin-top: -26px;
+    padding: 18px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cartao-hoje .rotulo{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color: var(--azul-medio);
+    margin:0 0 4px;
+  }
+  .cartao-hoje .data-grande{
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size: 20px;
+    margin:0;
+    color: var(--texto-escuro);
+  }
+  .pulso{
+    width:12px;height:12px;border-radius:50%;
+    background: var(--azul-medio);
+    box-shadow: 0 0 0 0 rgba(29,95,214,.6);
+    animation: pulsar 2s infinite;
+    flex-shrink:0;
+  }
+  @keyframes pulsar{
+    0%{box-shadow:0 0 0 0 rgba(29,95,214,.55);}
+    70%{box-shadow:0 0 0 12px rgba(29,95,214,0);}
+    100%{box-shadow:0 0 0 0 rgba(29,95,214,0);}
+  }
+
+  .secao-titulo{
+    margin: 30px 4px 12px;
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color: var(--azul-escuro);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+
+  .lista-dias{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .linha-dia{
+    background: var(--branco);
+    border-radius: 14px;
+    border: 1px solid var(--azul-claro-2);
+    padding: 14px 16px;
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .linha-dia.hoje{
+    border-color: var(--azul-medio);
+    box-shadow: 0 0 0 3px rgba(29,95,214,0.15);
+    background: linear-gradient(180deg,#FFFFFF, #F3F8FF);
+  }
+  .linha-dia.falta{
+    background: var(--alerta-bg);
+    border-color: #F0B98A;
+  }
+
+  .linha-cabeca{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .dia-semana{
+    font-weight:700;
+    font-size:15px;
+    color: var(--texto-escuro);
+  }
+  .dia-numero{
+    font-size:13px;
+    color:#5B6B8C;
+    font-weight:500;
+  }
+  .tag-hoje{
+    background: var(--azul-medio);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding: 3px 8px;
+    border-radius:999px;
+  }
+
+  .campos{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+  }
+  .campo label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    color:#5B6B8C;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:4px;
+  }
+  .campo input[type="time"]{
+    width:100%;
+    padding:10px 10px;
+    border-radius:10px;
+    border:1.5px solid var(--azul-claro-2);
+    font-size:16px;
+    font-family:'Inter',sans-serif;
+    color: var(--texto-escuro);
+    background:#FBFDFF;
+  }
+  .campo input[type="time"]:disabled{
+    opacity:.5;
+    background:#EEE;
+  }
+  .campo input[type="time"]:focus{
+    outline:none;
+    border-color: var(--azul-medio);
+    box-shadow: 0 0 0 3px rgba(29,95,214,.18);
+  }
+
+  .rodape-linha{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .falta-toggle{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:600;
+    color: var(--alerta);
+    cursor:pointer;
+    user-select:none;
+  }
+  .falta-toggle input{
+    width:16px;height:16px;
+    accent-color: var(--alerta);
+  }
+  .horas-dia{
+    font-size:13px;
+    font-weight:700;
+    color: var(--azul-escuro);
+    background: var(--azul-claro);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .horas-dia.vazio{
+    color:#8592AB;
+    background:#EEF2F8;
+  }
+
+  .resumo{
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--azul-escuro), var(--azul-medio));
+    color: var(--texto-claro);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: var(--sombra);
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 12px;
+    text-align:center;
+  }
+  .resumo .item .valor{
+    font-family:'Poppins',sans-serif;
+    font-weight:800;
+    font-size: 22px;
+    display:block;
+  }
+  .resumo .item .rotulo{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    opacity:.85;
+  }
+
+  .acoes{
+    display:flex;
+    justify-content:center;
+    margin-top:18px;
+  }
+  .btn-limpar{
+    background:none;
+    border: 1.5px solid #C7D6ED;
+    color:#5B6B8C;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 18px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .btn-limpar:active{ transform: scale(.97); }
+
+  footer.rodape-app{
+    text-align:center;
+    font-size:12px;
+    color:#8592AB;
+    margin-top:26px;
+    padding: 0 20px;
+  }
+
+  @media (min-width: 560px){
+    .linha-dia{
+      grid-template-columns: 1.1fr 1.4fr auto;
+      align-items:center;
+    }
+    .linha-cabeca{ flex-direction:column; align-items:flex-start; }
+    .campos{ grid-template-columns: 1fr 1fr; }
+    .rodape-linha{ flex-direction:column; align-items:flex-end; gap:6px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .pulso{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <p class="eyebrow">Registro de ponto</p>
+  <h1 class="nome">Fabrício</h1>
+  <p class="mes-atual" id="rotuloMes">—</p>
+  <p class="status-sync" id="statusSync">Conectando…</p>
+</header>
+
+<main>
+  <div class="cartao-hoje" id="cartaoHoje">
+    <div>
+      <p class="rotulo">Hoje</p>
+      <p class="data-grande" id="dataHojeTexto">—</p>
+    </div>
+    <span class="pulso" aria-hidden="true"></span>
+  </div>
+
+  <p class="secao-titulo">Dias úteis do mês</p>
+  <div class="lista-dias" id="listaDias"></div>
+
+  <div class="resumo">
+    <div class="item">
+      <span class="valor" id="totalDias">0</span>
+      <span class="rotulo">Dias trabalhados</span>
+    </div>
+    <div class="item">
+      <span class="valor" id="totalFaltas">0</span>
+      <span class="rotulo">Faltas</span>
+    </div>
+    <div class="item">
+      <span class="valor" id="totalHoras">0h</span>
+      <span class="rotulo">Horas no mês</span>
+    </div>
+  </div>
+
+  <div class="acoes">
+    <button class="btn-limpar" id="btnLimpar">Limpar este mês</button>
+  </div>
+</main>
+
+<footer class="rodape-app">
+  Os dados ficam salvos na nuvem (Firebase). Qualquer pessoa que abrir este link — no celular ou no computador — vê e edita os mesmos registros, em tempo real.
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // ====== CONFIGURE AQUI COM OS DADOS DO SEU PROJETO FIREBASE ======
+  // Copie esses valores do Firebase Console > Configurações do projeto > Seus apps > SDK config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDZwu5q3fuH_Y518nyr-9zauhIoHbk7fgg",
+    authDomain: "pontofabricio-39ac3.firebaseapp.com",
+    projectId: "pontofabricio-39ac3",
+    storageBucket: "pontofabricio-39ac3.firebasestorage.app",
+    messagingSenderId: "758956699662",
+    appId: "1:758956699662:web:b9f3c3d46e1d59c9518c5f"
+  };
+  // ===================================================================
+
+  const DIAS_SEMANA = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+  const hoje = new Date();
+  const anoAtual = hoje.getFullYear();
+  const mesAtual = hoje.getMonth(); // 0-11
+  const idDocumento = `fabricio-${anoAtual}-${String(mesAtual+1).padStart(2,'0')}`;
+  const hojeISO = formatarISO(hoje);
+
+  function formatarISO(d){
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  const statusEl = document.getElementById('statusSync');
+  let db, docRef;
+  let dados = {};
+  let pronto = false;
+
+  const configuracaoPendente = firebaseConfig.apiKey === "SUA_API_KEY_AQUI";
+
+  if(configuracaoPendente){
+    statusEl.textContent = 'Firebase ainda não configurado — veja o README';
+    statusEl.classList.add('erro');
+  } else {
+    try{
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      docRef = doc(db, 'pontos', idDocumento);
+
+      onSnapshot(docRef, (snap) => {
+        dados = (snap.exists() && snap.data().dias) ? snap.data().dias : {};
+        pronto = true;
+        statusEl.textContent = 'Sincronizado — todos veem o mesmo registro';
+        statusEl.classList.remove('erro');
+        statusEl.classList.add('ok');
+        renderizar();
+      }, (erro) => {
+        console.error('Erro de sincronização:', erro);
+        statusEl.textContent = 'Sem conexão com o banco de dados';
+        statusEl.classList.remove('ok');
+        statusEl.classList.add('erro');
+      });
+    }catch(e){
+      console.error('Erro ao iniciar Firebase:', e);
+      statusEl.textContent = 'Erro ao configurar o Firebase — veja o README';
+      statusEl.classList.add('erro');
+    }
+  }
+
+  async function salvarDia(iso, registro){
+    if(configuracaoPendente || !docRef) return;
+    try{
+      await setDoc(docRef, { dias: { [iso]: registro } }, { merge: true });
+    }catch(e){
+      console.error('Erro ao salvar:', e);
+      statusEl.textContent = 'Não foi possível salvar agora — tente de novo';
+      statusEl.classList.remove('ok');
+      statusEl.classList.add('erro');
+    }
+  }
+
+  // Cabeçalho: mês e data de hoje
+  document.getElementById('rotuloMes').textContent = `${MESES[mesAtual]} de ${anoAtual}`;
+  document.getElementById('dataHojeTexto').textContent =
+    `${DIAS_SEMANA[hoje.getDay()].charAt(0).toUpperCase()+DIAS_SEMANA[hoje.getDay()].slice(1)}, ${hoje.getDate()} de ${MESES[mesAtual]}`;
+
+  // Gera lista de dias úteis (segunda a sexta) do mês atual
+  const diasUteis = [];
+  const totalDiasNoMes = new Date(anoAtual, mesAtual+1, 0).getDate();
+  for(let dia=1; dia<=totalDiasNoMes; dia++){
+    const d = new Date(anoAtual, mesAtual, dia);
+    const diaSemana = d.getDay();
+    if(diaSemana >= 1 && diaSemana <= 5){
+      diasUteis.push(d);
+    }
+  }
+
+  function calcularHoras(entrada, saida){
+    if(!entrada || !saida) return null;
+    const [he, me] = entrada.split(':').map(Number);
+    const [hs, ms] = saida.split(':').map(Number);
+    let minutos = (hs*60+ms) - (he*60+me);
+    if(minutos <= 0) return null;
+    const horas = Math.floor(minutos/60);
+    const restoMin = minutos % 60;
+    return {texto: `${horas}h${restoMin ? String(restoMin).padStart(2,'0') : ''}`, minutos};
+  }
+
+  const listaEl = document.getElementById('listaDias');
+
+  function renderizar(){
+    listaEl.innerHTML = '';
+    let minutosTotais = 0;
+    let diasTrabalhados = 0;
+    let totalFaltas = 0;
+
+    diasUteis.forEach(d => {
+      const iso = formatarISO(d);
+      const registro = dados[iso] || {entrada:'', saida:'', falta:false};
+      const ehHoje = iso === hojeISO;
+
+      const linha = document.createElement('div');
+      linha.className = 'linha-dia' + (ehHoje ? ' hoje' : '') + (registro.falta ? ' falta' : '');
+      linha.id = ehHoje ? 'linhaHoje' : '';
+
+      const cabeca = document.createElement('div');
+      cabeca.className = 'linha-cabeca';
+      cabeca.innerHTML = `
+        <span class="dia-semana">${DIAS_SEMANA[d.getDay()].charAt(0).toUpperCase()+DIAS_SEMANA[d.getDay()].slice(1)}</span>
+        <span class="dia-numero">${String(d.getDate()).padStart(2,'0')}/${String(mesAtual+1).padStart(2,'0')}</span>
+        ${ehHoje ? '<span class="tag-hoje">Hoje</span>' : ''}
+      `;
+
+      const campos = document.createElement('div');
+      campos.className = 'campos';
+
+      const campoEntrada = document.createElement('div');
+      campoEntrada.className = 'campo';
+      campoEntrada.innerHTML = `<label>Entrada</label>`;
+      const inputEntrada = document.createElement('input');
+      inputEntrada.type = 'time';
+      inputEntrada.value = registro.entrada || '';
+      inputEntrada.disabled = registro.falta;
+      inputEntrada.addEventListener('change', () => {
+        atualizarRegistro(iso, {entrada: inputEntrada.value});
+      });
+      campoEntrada.appendChild(inputEntrada);
+
+      const campoSaida = document.createElement('div');
+      campoSaida.className = 'campo';
+      campoSaida.innerHTML = `<label>Saída</label>`;
+      const inputSaida = document.createElement('input');
+      inputSaida.type = 'time';
+      inputSaida.value = registro.saida || '';
+      inputSaida.disabled = registro.falta;
+      inputSaida.addEventListener('change', () => {
+        atualizarRegistro(iso, {saida: inputSaida.value});
+      });
+      campoSaida.appendChild(inputSaida);
+
+      campos.appendChild(campoEntrada);
+      campos.appendChild(campoSaida);
+
+      const rodapeLinha = document.createElement('div');
+      rodapeLinha.className = 'rodape-linha';
+
+      const faltaLabel = document.createElement('label');
+      faltaLabel.className = 'falta-toggle';
+      const faltaCheckbox = document.createElement('input');
+      faltaCheckbox.type = 'checkbox';
+      faltaCheckbox.checked = !!registro.falta;
+      faltaCheckbox.addEventListener('change', () => {
+        atualizarRegistro(iso, {falta: faltaCheckbox.checked});
+      });
+      faltaLabel.appendChild(faltaCheckbox);
+      faltaLabel.appendChild(document.createTextNode('Falta'));
+
+      const horasCalculadas = registro.falta ? null : calcularHoras(registro.entrada, registro.saida);
+      const horasSpan = document.createElement('span');
+      horasSpan.className = 'horas-dia' + (horasCalculadas ? '' : ' vazio');
+      horasSpan.textContent = registro.falta ? 'Falta' : (horasCalculadas ? horasCalculadas.texto : '—');
+
+      rodapeLinha.appendChild(faltaLabel);
+      rodapeLinha.appendChild(horasSpan);
+
+      linha.appendChild(cabeca);
+      linha.appendChild(campos);
+      linha.appendChild(rodapeLinha);
+      listaEl.appendChild(linha);
+
+      if(registro.falta){
+        totalFaltas++;
+      } else if(horasCalculadas){
+        diasTrabalhados++;
+        minutosTotais += horasCalculadas.minutos;
+      }
+    });
+
+    document.getElementById('totalDias').textContent = diasTrabalhados;
+    document.getElementById('totalFaltas').textContent = totalFaltas;
+    const hTot = Math.floor(minutosTotais/60);
+    const mTot = minutosTotais % 60;
+    document.getElementById('totalHoras').textContent = `${hTot}h${mTot ? String(mTot).padStart(2,'0') : ''}`;
+  }
+
+  function atualizarRegistro(iso, mudanca){
+    const atual = dados[iso] || {entrada:'', saida:'', falta:false};
+    const novo = {...atual, ...mudanca};
+    dados[iso] = novo; // atualização imediata na tela
+    renderizar();
+    salvarDia(iso, novo); // grava no Firestore; onSnapshot confirma para todos
+  }
+
+  document.getElementById('btnLimpar').addEventListener('click', async () => {
+    if(!confirm('Tem certeza que deseja apagar todos os registros deste mês? Isso vale para todos que acessam esta página.')) return;
+    const vazio = {};
+    diasUteis.forEach(d => vazio[formatarISO(d)] = {entrada:'', saida:'', falta:false});
+    dados = vazio;
+    renderizar();
+    if(!configuracaoPendente && docRef){
+      try{
+        await setDoc(docRef, { dias: vazio }, { merge: false });
+      }catch(e){
+        console.error('Erro ao limpar:', e);
+      }
+    }
+  });
+
+  renderizar();
+
+  // Rola até o dia de hoje assim que os dados chegarem pela primeira vez
+  let jaRolou = false;
+  const observadorRolagem = setInterval(() => {
+    if(pronto || configuracaoPendente){
+      if(!jaRolou){
+        const alvo = document.getElementById('linhaHoje');
+        if(alvo) alvo.scrollIntoView({behavior:'smooth', block:'center'});
+        jaRolou = true;
+      }
+      clearInterval(observadorRolagem);
+    }
+  }, 150);
+</script>
+
+</body>
+</html>
