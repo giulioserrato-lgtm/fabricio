@@ -3,9 +3,13 @@
 Este site mostra o ponto (entrada/saída) do Fabrício de segunda a sexta, no mês atual, e salva tudo num banco de dados compartilhado (Firebase), para que você e suas irmãs vejam sempre os mesmos registros, de qualquer celular ou computador.
 
 Arquivos deste pacote:
-- `index.html` → a página em si (é o único arquivo que vai para o GitHub/Netlify)
+- `index.html` → a página em si
+- `manifest.json` → permite instalar a página como app no Android
+- `icone-192.png`, `icone-512.png`, `icone-apple-180.png` → ícones do app
 - `firestore.rules` → regra de segurança para colar no Firebase (não vai para o site)
 - `README.md` → este guia
+
+Envie **todos os arquivos acima, exceto o `firestore.rules` e o `README.md`**, para o mesmo repositório do GitHub, na mesma pasta (não precisa criar subpastas).
 
 ## Parte 1 — Criar o banco de dados no Firebase (gratuito)
 
@@ -60,10 +64,8 @@ const firebaseConfig = {
 1. Crie uma conta em **github.com**, se ainda não tiver.
 2. Clique em **New repository**, dê um nome (ex: `ponto-fabricio`), deixe **Public** e clique em **Create repository**.
 3. Na tela do repositório, clique em **Add file → Upload files**.
-4. Arraste o arquivo `index.html` (já com a configuração do Firebase preenchida) para a janela.
+4. Arraste **todos estes arquivos juntos**: `index.html`, `manifest.json`, `icone-192.png`, `icone-512.png` e `icone-apple-180.png`.
 5. Clique em **Commit changes**.
-
-Você só precisa subir o `index.html` — o `firestore.rules` e este `README.md` são só para referência sua, não precisam ir para o site.
 
 ## Parte 4 — Publicar no Netlify
 
@@ -80,8 +82,28 @@ Você só precisa subir o `index.html` — o `firestore.rules` e este `README.md
 - Todo dia útil sem horário marcado já vem preenchido com **09:00 de entrada e 19:00 de saída** — é só editar quando o horário real for diferente.
 - Sempre que alguém preencher entrada, saída ou marcar falta, isso é salvo na nuvem na hora, para o mês selecionado.
 - Se duas pessoas abrirem o link ao mesmo tempo, ambas veem as mesmas informações atualizadas automaticamente, sem precisar atualizar a página.
-- O botão **Limpar mês selecionado** apaga os registros do mês que está sendo exibido no momento — use com cuidado.
+- O botão **Limpar mês selecionado** apaga os registros do mês que está sendo exibido no momento — agora exige um **código de confirmação** antes de apagar. O código padrão no arquivo é `1234`; procure por `CODIGO_PARA_LIMPAR` dentro do `index.html` e troque por um código só seu antes de publicar o site. Importante: essa é uma proteção simples (funciona bem para evitar cliques por engano ou curiosidade), mas não é uma segurança à prova de blindagem — alguém com conhecimento técnico ainda poderia contornar. Para uma proteção mais forte, seria necessário adicionar login (Firebase Authentication).
 - No canto superior direito há os botões **A− / A+** para diminuir ou aumentar o tamanho do texto da página inteira, útil para quem tem dificuldade de leitura; a preferência fica salva no navegador de cada pessoa.
+
+## Parte 5 — Instalar como app no celular
+
+Depois que o link do Netlify estiver no ar, cada pessoa faz esse passo **uma vez, no próprio celular**:
+
+### No Android (Google Chrome)
+1. Abra o link do site no Chrome.
+2. Toque nos **três pontinhos** (⋮) no canto superior direito.
+3. Toque em **Adicionar à tela inicial** (ou **Instalar app**, dependendo da versão do Chrome).
+4. Confirme o nome "Ponto Fabrício" e toque em **Adicionar**.
+5. Um ícone azul com a letra "F" aparece na tela inicial, e abre em tela cheia, como um app de verdade.
+
+### No iPhone (Safari)
+1. Abra o link do site no **Safari** (precisa ser o Safari, não funciona pelo Chrome no iPhone).
+2. Toque no ícone de **compartilhar** (o quadrado com uma seta para cima), na barra inferior.
+3. Role para baixo e toque em **Adicionar à Tela de Início**.
+4. Confirme o nome e toque em **Adicionar**, no canto superior direito.
+5. O ícone aparece na tela inicial, e abre sem as barras do navegador, como um app.
+
+Isso não precisa ser feito de novo — uma vez instalado, o ícone continua funcionando, buscando sempre os dados mais recentes da nuvem.
 
 ## Sobre segurança
 
