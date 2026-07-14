@@ -482,7 +482,7 @@
 </main>
 
 <footer class="rodape-app">
-  Os dados ficam salvos na nuvem (Firebase). Qualquer pessoa que abrir este link — no celular ou no computador — vê e edita os mesmos registros, em tempo real. Todo dia sem horário marcado começa preenchido com 09:00 de entrada e 19:00 de saída — edite sempre que precisar.
+  Copyright MD2026
 </footer>
 
 <script type="module">
@@ -500,6 +500,10 @@
 
   const HORARIO_PADRAO_ENTRADA = "09:00";
   const HORARIO_PADRAO_SAIDA = "19:00";
+
+  // Código exigido para apagar os registros de um mês.
+  // Troque "1234" por um código só seu antes de publicar o site.
+  const CODIGO_PARA_LIMPAR = "vida";
 
   const DIAS_SEMANA = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
   const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
@@ -813,6 +817,12 @@
 
   document.getElementById('btnLimpar').addEventListener('click', async () => {
     const {ano, mes} = listaMeses[indiceMesSelecionado];
+    const codigoDigitado = prompt(`Para apagar os registros de ${MESES[mes]} de ${ano}, digite o código de confirmação:`);
+    if(codigoDigitado === null) return; // cancelou
+    if(codigoDigitado !== CODIGO_PARA_LIMPAR){
+      alert('Código incorreto. Os registros não foram apagados.');
+      return;
+    }
     if(!confirm(`Tem certeza que deseja apagar todos os registros de ${MESES[mes]} de ${ano}? Isso vale para todos que acessam esta página.`)) return;
     const vazio = {};
     diasUteis.forEach(d => vazio[formatarISO(d)] = {
